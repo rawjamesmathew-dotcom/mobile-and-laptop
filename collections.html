@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collections — GTS | Mobile & Laptop Accessories</title>
+<meta name="description" content="Browse the full GTS catalogue of premium mobile and laptop accessories. Filter, sort and order retail or wholesale.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230A0A0A'/><text x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='white' text-anchor='middle'>G</text><circle cx='23' cy='9' r='3' fill='%23C41E3A'/></svg>">
+</head>
+<body data-page="Collections">
+<div id="app-header"></div>
+<section class="page-hero">
+  <div class="hero-bg"><div class="hero-grid"></div><div class="hero-orb"></div></div>
+  <div class="container">
+    <p class="eyebrow">The Catalogue</p>
+    <h1>All Collections</h1>
+    <p>Premium mobile and laptop accessories — every price below updates live from the central catalogue. Wholesale tiers apply automatically at 10+ units in your cart.</p>
+  </div>
+</section>
+<main class="page container" style="padding-bottom:96px">
+  <div class="filter-bar" id="search">
+    <div class="search-input"><span id="searchIcon"></span>
+      <input type="search" id="filterSearch" placeholder="Search chargers, hubs, stands…" aria-label="Search products">
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="chip active" data-cat="all">All</button>
+      <button class="chip" data-cat="mobile">Mobile</button>
+      <button class="chip" data-cat="laptop">Laptop</button>
+    </div>
+    <select class="select" id="filterSort" aria-label="Sort products">
+      <option value="featured">Sort: Featured</option>
+      <option value="new">Sort: Newest</option>
+      <option value="price-asc">Price: Low → High</option>
+      <option value="price-desc">Price: High → Low</option>
+      <option value="name">Name: A → Z</option>
+    </select>
+  </div>
+  <p class="muted" id="resultCount" style="margin-bottom:20px;font-size:.85rem"></p>
+  <div class="product-grid" id="catalogGrid"></div>
+  <div class="empty-state" id="emptyState" style="display:none">
+    <h3>No products match your filters</h3>
+    <p>Try a different search term or category.</p>
+    <button class="btn btn-ghost btn-sm" id="resetFilters" style="margin-top:18px">Reset filters</button>
+  </div>
+</main>
+<div id="app-footer"></div>
+<script src="js/data.js"></script><script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('searchIcon').innerHTML = ICONS.search;
+  const grid = document.getElementById('catalogGrid');
+  const state = { cat:'all', q:'', sort:'featured' };
+  const params = new URLSearchParams(location.search);
+  if (params.get('cat')) state.cat = params.get('cat');
+  if (location.hash === '#search') setTimeout(()=>document.getElementById('filterSearch').focus(), 400);
+
+  function effective(p){ return (p.sale && p.sale < p.price) ? p.sale : p.price; }
+  function render(){
+    let list = gtsProducts().slice();
+    if (state.cat !== 'all') list = list.filter(p => p.category === state.cat);
+    if (state.q){ const q = state.q.toLowerCase();
+      list = list.filter(p => (p.name+' '+p.type+' '+p.desc+' '+p.category).toLowerCase().includes(q)); }
+    if (state.sort==='price-asc') list.sort((a,b)=>effective(a)-effective(b));
+    else if (state.sort==='price-desc') list.sort((a,b)=>effective(b)-effective(a));
+    else if (state.sort==='name') list.sort((a,b)=>a.name.localeCompare(b.name));
+    else if (state.sort==='new') list.sort((a,b)=>b.created.localeCompare(a.created));
+    else list.sort((a,b)=>(b.featured?1:0)-(a.featured?1:0) || b.updated.localeCompare(a.updated));
+    document.getElementById('resultCount').textContent = list.length + ' product' + (list.length===1?'':'s');
+    grid.innerHTML = list.map((p,i)=>productCard(p, Math.min(i,8)*50)).join('');
+    document.getElementById('emptyState').style.display = list.length ? 'none' : 'block';
+    grid.style.display = list.length ? 'grid' : 'none';
+    bindProductCards(grid); gtsReveal();
+  }
+  document.querySelectorAll('[data-cat]').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-cat]').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); state.cat = b.dataset.cat; render();
+  }));
+  document.getElementById('filterSearch').addEventListener('input', e => { state.q = e.target.value; render(); });
+  document.getElementById('filterSort').addEventListener('change', e => { state.sort = e.target.value; render(); });
+  document.getElementById('resetFilters').addEventListener('click', () => {
+    state.cat='all'; state.q=''; state.sort='featured';
+    document.getElementById('filterSearch').value='';
+    document.getElementById('filterSort').value='featured';
+    document.querySelectorAll('[data-cat]').forEach(x=>x.classList.toggle('active', x.dataset.cat==='all'));
+    render();
+  });
+  if (state.cat !== 'all') document.querySelectorAll('[data-cat]').forEach(x=>x.classList.toggle('active', x.dataset.cat===state.cat));
+  render();
+});
+</script>
+</body>
+</html>

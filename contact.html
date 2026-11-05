@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — GTS</title>
+<meta name="description" content="Contact GTS for retail orders, wholesale partnerships and product enquiries across Sri Lanka, India, Nepal, Bangladesh and Pakistan.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230A0A0A'/><text x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='white' text-anchor='middle'>G</text><circle cx='23' cy='9' r='3' fill='%23C41E3A'/></svg>">
+</head>
+<body data-page="Contact">
+<div id="app-header"></div>
+<section class="page-hero">
+  <div class="hero-bg"><div class="hero-grid"></div><div class="hero-orb"></div></div>
+  <div class="container">
+    <p class="eyebrow">Get in touch</p>
+    <h1>Contact GTS</h1>
+    <p>Retail questions, wholesale partnerships, product feedback — a real person reads every message.</p>
+  </div>
+</section>
+<main class="page container" style="padding-bottom:96px">
+  <div class="contact-grid">
+    <div class="info-card reveal">
+      <h3 style="margin-bottom:8px">Contact details</h3>
+      <div class="info-row"><span class="info-icon" id="icMail"></span><div><b>Email</b><span>samith.gts@gmail.com — orders &amp; wholesale</span></div></div>
+      <div class="info-row"><span class="info-icon" id="icClock"></span><div><b>Response time</b><span>Within 1–2 business days</span></div></div>
+      <div class="info-row"><span class="info-icon" id="icPin"></span><div><b>Markets</b><span>Sri Lanka · India · Nepal · Bangladesh · Pakistan</span></div></div>
+      <div class="info-row"><span class="info-icon" id="icGlobe"></span><div><b>Wholesale</b><span>Mention your business type &amp; target tier for faster quotes</span></div></div>
+    </div>
+    <div class="info-card reveal">
+      <form id="contactForm" novalidate>
+        <div class="form-grid">
+          <div class="field"><label for="cName">Name *</label><input id="cName" required data-min="2" autocomplete="name"><span class="err">Please enter your name.</span></div>
+          <div class="field"><label for="cEmail">Email *</label><input id="cEmail" type="email" required autocomplete="email"><span class="err">Please enter a valid email address.</span></div>
+          <div class="field"><label for="cCountry">Country *</label>
+            <select id="cCountry" required>
+              <option value="">Select country…</option>
+              <option>Sri Lanka</option><option>India</option><option>Nepal</option><option>Bangladesh</option><option>Pakistan</option><option>Other</option>
+            </select><span class="err">Please select your country.</span></div>
+          <div class="field"><label for="cTopic">Topic</label>
+            <select id="cTopic"><option>General enquiry</option><option>Wholesale partnership</option><option>Order enquiry</option><option>Product feedback</option></select></div>
+          <div class="field full"><label for="cMsg">Message *</label><textarea id="cMsg" rows="5" required data-min="10"></textarea><span class="err">Please write a message (min 10 characters).</span></div>
+        </div>
+        <button class="btn btn-primary" type="submit" id="contactSubmit" style="margin-top:20px">Send Message</button>
+        <div class="form-success" id="contactSuccess">
+          <h4>Message received</h4>
+          <p class="muted" style="font-size:.9rem">Thank you — your message has been recorded. Our team will reply within 1–2 business days.</p>
+          <a class="btn btn-ghost btn-sm" id="contactMailto" style="margin-top:14px" href="#">Open in your email app</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</main>
+<div id="app-footer"></div>
+<script src="js/data.js"></script><script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('icMail').innerHTML = ICONS.mail;
+  document.getElementById('icClock').innerHTML = ICONS.clock;
+  document.getElementById('icPin').innerHTML = ICONS.pin;
+  document.getElementById('icGlobe').innerHTML = ICONS.globe;
+  const form = document.getElementById('contactForm');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!gtsValidate(form)){ gtsToast('Please fix the highlighted fields'); return; }
+    const btn = document.getElementById('contactSubmit');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    const data = {
+      kind:'contact', name:cName.value.trim(), email:cEmail.value.trim(),
+      country:cCountry.value, topic:cTopic.value, message:cMsg.value.trim()
+    };
+    setTimeout(() => {
+      gtsSaveEnquiry(data);
+      const body = `Name: ${data.name}\nEmail: ${data.email}\nCountry: ${data.country}\nTopic: ${data.topic}\n\n${data.message}`;
+      document.getElementById('contactMailto').href = gtsMailto('GTS Contact — ' + data.topic, body);
+      document.getElementById('contactSuccess').classList.add('show');
+      form.reset(); btn.disabled = false; btn.textContent = 'Send Message';
+      gtsToast('Message sent successfully');
+      document.getElementById('contactSuccess').scrollIntoView({behavior:'smooth', block:'center'});
+    }, 700);
+  });
+  gtsReveal();
+});
+</script>
+</body>
+</html>

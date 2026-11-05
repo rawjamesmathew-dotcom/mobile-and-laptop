@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cart — GTS</title>
+<meta name="description" content="Your GTS cart — wholesale tiers apply automatically at quantity. Request an order enquiry; no payment is taken online.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230A0A0A'/><text x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='white' text-anchor='middle'>G</text><circle cx='23' cy='9' r='3' fill='%23C41E3A'/></svg>">
+</head>
+<body data-page="Cart">
+<div id="app-header"></div>
+<section class="page-hero" style="padding-bottom:40px">
+  <div class="hero-bg"><div class="hero-grid"></div><div class="hero-orb"></div></div>
+  <div class="container"><p class="eyebrow">Your Selection</p><h1>Shopping Cart</h1></div>
+</section>
+<main class="page container" style="padding-bottom:96px" id="cartRoot"></main>
+<div id="app-footer"></div>
+<script src="js/data.js"></script><script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const root = document.getElementById('cartRoot');
+  function render(){
+    const cart = gtsCart();
+    if (!cart.length){
+      root.innerHTML = `<div class="empty-state"><h3>Your cart is empty</h3><p>Browse the catalogue and add accessories — wholesale tiers unlock at 10+ units.</p>
+        <a class="btn btn-primary btn-sm" href="collections.html" style="margin-top:18px">Explore Collection</a></div>`;
+      return;
+    }
+    const lines = cart.map(line => {
+      const p = gtsBySlug(line.slug); if(!p) return '';
+      const eff = (p.sale && p.sale < p.price) ? p.sale : p.price;
+      const w = gtsWholesalePrice(p, line.qty);
+      return `<div class="cart-item" data-slug="${p.slug}">
+        <a class="ci-art" href="product.html?slug=${p.slug}">${productArt(p.art)}</a>
+        <div>
+          <h4><a href="product.html?slug=${p.slug}">${p.name}</a></h4>
+          <p class="ci-meta">${p.type} · ${p.category==='mobile'?'Mobile':'Laptop'}</p>
+          <div class="qty" style="transform:scale(.85);transform-origin:left">
+            <button data-dec aria-label="Decrease">−</button>
+            <input value="${line.qty}" data-qty inputmode="numeric" aria-label="Quantity for ${p.name}">
+            <button data-inc aria-label="Increase">+</button>
+          </div>
+          ${w.discount ? `<p class="pc-wholesale" style="margin-top:8px">✦ Wholesale tier applied — <b>${money(w.unit)}</b>/unit (${Math.round(w.discount*100)}% off ${money(eff)})</p>` : ''}
+        </div>
+        <div class="ci-right">
+          <b>${money(line.unit * line.qty)}</b>
+          <button class="link-btn" data-remove>Remove</button>
+        </div>
+      </div>`;
+    }).join('');
+    const t = gtsCartTotals();
+    const qtyTotal = gtsCartCount();
+    root.innerHTML = `<div class="cart-layout">
+      <div>
+        <p class="muted" style="font-size:.85rem;margin-bottom:16px">${cart.length} line item${cart.length>1?'s':''} · ${qtyTotal} unit${qtyTotal>1?'s':''} total</p>
+        ${lines}
+        <a class="link-btn" href="collections.html" style="text-decoration:none;display:inline-flex;gap:8px;align-items:center;margin-top:8px">← Continue shopping</a>
+      </div>
+      <div class="summary">
+        <h3>Order Summary</h3>
+        <div class="sum-row"><span>Retail subtotal</span><span>${money(t.subtotal)}</span></div>
+        <div class="sum-row"><span>Wholesale savings</span><span style="color:#7ee2ae">− ${money(t.discount)}</span></div>
+        <div class="sum-row"><span>Delivery</span><span class="free">Confirmed at order</span></div>
+        <div class="sum-row total"><span>Total</span><span>${money(t.total)}</span></div>
+        <div class="wholesale-note">Wholesale tiers (10 / 25 / 50+ units) are applied automatically per product line. No payment is taken online — your request goes to our team for confirmation.</div>
+        <form id="orderForm" novalidate style="margin-top:22px">
+          <div class="form-grid">
+            <div class="field full"><label for="oName">Name *</label><input id="oName" required data-min="2" autocomplete="name"><span class="err">Please enter your name.</span></div>
+            <div class="field full"><label for="oEmail">Email *</label><input id="oEmail" type="email" required autocomplete="email"><span class="err">Please enter a valid email.</span></div>
+            <div class="field full"><label for="oCountry">Country *</label>
+              <select id="oCountry" required><option value="">Select…</option><option>Sri Lanka</option><option>India</option><option>Nepal</option><option>Bangladesh</option><option>Pakistan</option><option>Other</option></select>
+              <span class="err">Please select your country.</span></div>
+            <div class="field full"><label for="oPhone">Phone (optional)</label><input id="oPhone" type="tel" autocomplete="tel"></div>
+            <div class="field full"><label for="oMsg">Message (optional)</label><textarea id="oMsg" rows="3" placeholder="Delivery city, wholesale account, questions…"></textarea></div>
+          </div>
+          <button class="btn btn-primary" type="submit" id="orderSubmit" style="width:100%;margin-top:16px">Request Order / Enquire</button>
+        </form>
+        <div class="form-success" id="orderSuccess">
+          <h4>Order request received</h4>
+          <p class="muted" style="font-size:.88rem">Nothing has been charged. Our team will confirm stock, final pricing and delivery options by email.</p>
+          <a class="btn btn-ghost btn-sm" id="orderMailto" style="margin-top:14px" href="#">Open summary in email app</a>
+        </div>
+      </div>
+    </div>`;
+    root.querySelectorAll('.cart-item').forEach(el => {
+      const slug = el.dataset.slug;
+      const input = el.querySelector('[data-qty]');
+      el.querySelector('[data-inc]').addEventListener('click', ()=>{ gtsSetQty(slug,(parseInt(input.value)||1)+1); render(); });
+      el.querySelector('[data-dec]').addEventListener('click', ()=>{ gtsSetQty(slug,(parseInt(input.value)||1)-1); render(); });
+      input.addEventListener('change', ()=>{ gtsSetQty(slug, parseInt(input.value)||1); render(); });
+      el.querySelector('[data-remove]').addEventListener('click', ()=>{ gtsRemoveFromCart(slug); gtsToast('Removed from cart'); render(); });
+    });
+    const form = document.getElementById('orderForm');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      if (!gtsValidate(form)){ gtsToast('Please fix the highlighted fields'); return; }
+      const btn = document.getElementById('orderSubmit');
+      btn.disabled = true; btn.textContent = 'Sending…';
+      const linesTxt = cart.map(l => {
+        const p = gtsBySlug(l.slug);
+        return `• ${p.name} — ${l.qty} × ${money(l.unit)} = ${money(l.qty*l.unit)}`;
+      }).join('\n');
+      const body = `ORDER ENQUIRY — GTS\n====================\nName: ${oName.value.trim()}\nEmail: ${oEmail.value.trim()}\nCountry: ${oCountry.value}\nPhone: ${oPhone.value.trim()||'—'}\n\nITEMS\n${linesTxt}\n\nRetail subtotal: ${money(t.subtotal)}\nWholesale savings: - ${money(t.discount)}\nTOTAL: ${money(t.total)}\n\nNote: price snapshot at time of enquiry. No payment has been made.\n\nMessage:\n${oMsg.value.trim()||'—'}`;
+      setTimeout(()=>{
+        gtsSaveEnquiry({ kind:'order', name:oName.value.trim(), email:oEmail.value.trim(), country:oCountry.value, phone:oPhone.value.trim(), message:oMsg.value.trim(), items:cart, total:t.total });
+        document.getElementById('orderMailto').href = gtsMailto('GTS Order Enquiry — ' + oCountry.value, body);
+        document.getElementById('orderSuccess').classList.add('show');
+        gtsSaveCart([]); render();
+        gtsToast('Order request sent — thank you');
+      }, 700);
+    });
+  }
+  render();
+});
+</script>
+</body>
+</html>

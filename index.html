@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTS — The Excellent Brand from Overseas | Mobile & Laptop Accessories</title>
+<meta name="description" content="GTS — premium mobile and laptop accessories. Imported quality, local presence. Retail and wholesale across Sri Lanka, India, Nepal, Bangladesh and Pakistan.">
+<meta property="og:title" content="GTS — The Excellent Brand from Overseas">
+<meta property="og:description" content="Premium mobile & laptop accessories. Retail and wholesale.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230A0A0A'/><text x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='white' text-anchor='middle'>G</text><circle cx='23' cy='9' r='3' fill='%23C41E3A'/></svg>">
+</head>
+<body data-page="Home">
+<div id="app-header"></div>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-orb"></div><div class="hero-orb2"></div>
+  </div>
+  <div class="container hero-inner">
+    <div>
+      <p class="eyebrow reveal">Mobile &amp; Laptop Accessories</p>
+      <h1 class="reveal"><span class="outline">GTS</span>The Excellent Brand from Overseas</h1>
+      <p class="hero-tagline reveal">Premium Accessories. Retail &amp; Wholesale Excellence.</p>
+      <p class="hero-sub reveal">Imported-quality chargers, audio, stands, hubs and carry gear — dependable construction and modern design, delivered with local presence across South Asia.</p>
+      <div class="hero-ctas reveal">
+        <a class="btn btn-primary" href="collections.html">Explore Collection</a>
+        <a class="btn btn-ghost" href="about.html">Discover GTS</a>
+      </div>
+      <div class="hero-stats reveal">
+        <div><b>2</b><span>Core categories</span></div>
+        <div><b>5</b><span>Markets served</span></div>
+        <div><b>10+</b><span>Wholesale tiers</span></div>
+      </div>
+    </div>
+    <div class="hero-visual reveal" id="heroVisual" aria-hidden="true">
+      <div class="hv-card hv-main" data-hero-tilt>
+        <span class="hv-tag">Best Seller</span>
+        <div class="art-wrap" id="heroMainArt"></div>
+        <h3 id="heroMainName"></h3>
+        <div class="hv-price" id="heroMainPrice"></div>
+      </div>
+      <div class="hv-card hv-float1" data-hero-tilt>
+        <div class="mini-art" id="heroFloat1Art"></div>
+        <b id="heroFloat1Name"></b><span id="heroFloat1Price"></span>
+      </div>
+      <div class="hv-card hv-float2" data-hero-tilt>
+        <div class="mini-art" id="heroFloat2Art"></div>
+        <b id="heroFloat2Name"></b><span id="heroFloat2Price"></span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true"><div class="marquee-track" id="marqueeTrack"></div></div>
+
+<!-- ============ CATEGORY SPLIT ============ -->
+<section class="section grain">
+  <div class="container">
+    <div class="section-head reveal">
+      <div><p class="eyebrow">Two Worlds. One Standard.</p><h2 class="section-title">Built for Strength.<br>Designed for Style.</h2></div>
+      <a class="btn btn-ghost btn-sm" href="collections.html">View all collections</a>
+    </div>
+    <div class="cat-grid">
+      <a class="cat-panel reveal" href="collections.html?cat=mobile" data-tilt>
+        <div class="cat-art" id="catArtMobile"></div>
+        <span class="num">01 / CATEGORY</span>
+        <h3>MOBILE</h3>
+        <p>Power, audio and protection for life in motion — chargers, earbuds, power banks, cases and stands.</p>
+        <span class="cat-link"><span class="arr" id="arrM"></span>Shop Mobile Accessories</span>
+      </a>
+      <a class="cat-panel reveal" href="collections.html?cat=laptop" data-tilt>
+        <div class="cat-art" id="catArtLaptop"></div>
+        <span class="num">02 / CATEGORY</span>
+        <h3>LAPTOP</h3>
+        <p>Stands, hubs, keyboards and carry — precision-built tools that turn any desk into a workstation.</p>
+        <span class="cat-link"><span class="arr" id="arrL"></span>Shop Laptop Accessories</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURED PRODUCTS ============ -->
+<section class="section" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-head reveal">
+      <div><p class="eyebrow">New Arrivals &amp; Featured</p><h2 class="section-title">The Edit</h2></div>
+      <a class="btn btn-ghost btn-sm" href="collections.html">Browse full catalogue</a>
+    </div>
+    <div class="product-grid" id="featuredGrid"></div>
+  </div>
+</section>
+
+<!-- ============ BRAND STORY ============ -->
+<section class="section grain">
+  <div class="container">
+    <div class="story reveal">
+      <p class="eyebrow" style="justify-content:center;display:inline-flex">The GTS Story</p>
+      <blockquote>Imported quality. <em>Local presence.</em> Built for those who demand excellence.</blockquote>
+      <p>GTS began with a simple observation: the accessories people rely on every day — the charger, the cable, the stand — deserved the same care as the devices they serve. We source and curate dependable, well-made accessories and back them with personal, local support for retailers and wholesalers across our markets.</p>
+      <a class="btn btn-ghost" href="about.html">Read our story</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY GTS ============ -->
+<section class="section" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-head reveal"><div><p class="eyebrow">Why GTS</p><h2 class="section-title">Excellence, engineered in.</h2></div></div>
+    <div class="feat-grid">
+      <div class="feat-card reveal" id="feat1"><h3>Premium Materials</h3><p>Anodised aluminium, braided nylon, aramid shells — we choose materials that survive daily abuse and still look the part.</p></div>
+      <div class="feat-card reveal" id="feat2"><h3>Overseas Standards</h3><p>Every range is selected against the specification and finish standards we demand from international manufacturing partners.</p></div>
+      <div class="feat-card reveal" id="feat3"><h3>Modern Design</h3><p>Clean lines, honest proportions and dark, minimal styling that complements the devices they accompany.</p></div>
+      <div class="feat-card reveal" id="feat4"><h3>Durability Meets Style</h3><p>Bend-tested cables, drop-tested cases, load-rated stands — engineered to last without sacrificing aesthetics.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOOKBOOK / GALLERY ============ -->
+<section class="section grain" id="gallery">
+  <div class="container">
+    <div class="section-head reveal">
+      <div><p class="eyebrow">Lookbook</p><h2 class="section-title">In Focus</h2></div>
+      <div class="gallery-filters" id="galleryFilters">
+        <button class="chip active" data-gfilter="all">All</button>
+        <button class="chip" data-gfilter="mobile">Mobile</button>
+        <button class="chip" data-gfilter="laptop">Laptop</button>
+      </div>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+    <p class="country-note reveal" style="text-align:left;margin-top:18px">Illustrated product artwork shown while licensed photography is sourced. No stock photos are presented as real customers or staff.</p>
+  </div>
+</section>
+
+<!-- ============ WHOLESALE BAND ============ -->
+<section class="section" id="wholesale" style="background:var(--bg2)">
+  <div class="container">
+    <div class="band reveal">
+      <div>
+        <p class="eyebrow">Retail &amp; Wholesale</p>
+        <h2>Stock GTS. Grow with tiered wholesale pricing.</h2>
+        <p>Shops, distributors and resellers across Sri Lanka, India, Nepal, Bangladesh and Pakistan can request wholesale accounts. Tiered pricing applies automatically in the cart at quantity.</p>
+        <div style="display:flex;gap:12px;margin-top:26px;flex-wrap:wrap">
+          <a class="btn btn-primary" href="contact.html">Become a Wholesale Partner</a>
+          <a class="btn btn-ghost" href="collections.html">See products</a>
+        </div>
+      </div>
+      <table class="tier-table" aria-label="Wholesale pricing tiers">
+        <thead><tr><th>Order size</th><th>Your saving</th></tr></thead>
+        <tbody id="tierRows"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIALS ============ -->
+<section class="section grain">
+  <div class="container">
+    <div class="section-head reveal">
+      <div><p class="eyebrow">Feedback</p><h2 class="section-title">What partners say</h2></div>
+      <a class="btn btn-ghost btn-sm" href="contact.html">Submit feedback</a>
+    </div>
+    <div class="testi-grid" id="testiGrid"></div>
+    <p class="country-note reveal">Entries shown are clearly-marked demo content for layout preview only — they are not real customer reviews, and genuine feedback is moderated before publishing.</p>
+  </div>
+</section>
+
+<!-- ============ COUNTRIES ============ -->
+<section class="section" style="background:var(--bg2)">
+  <div class="container">
+    <div class="section-head reveal"><div><p class="eyebrow">Our Markets</p><h2 class="section-title">Five countries. One standard.</h2></div></div>
+    <div class="country-grid" id="countryGrid"></div>
+    <p class="country-note reveal">Markets GTS intends to serve with retail and wholesale supply. Country labels indicate intended market presence only.</p>
+  </div>
+</section>
+
+<div id="app-footer"></div>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+  <button class="icon-btn lightbox-close" id="lightboxClose" aria-label="Close viewer">✕</button>
+  <div class="lightbox-card" id="lightboxCard"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const products = gtsProducts();
+  /* hero cards */
+  const feat = products.filter(p => p.featured).slice(0,3);
+  if (feat[0]) {
+    document.getElementById('heroMainArt').innerHTML = productArt(feat[0].art);
+    document.getElementById('heroMainName').textContent = feat[0].name;
+    document.getElementById('heroMainPrice').innerHTML =
+      `<b>${money(feat[0].sale && feat[0].sale < feat[0].price ? feat[0].sale : feat[0].price)}</b>` +
+      (feat[0].sale && feat[0].sale < feat[0].price ? `<s>${money(feat[0].price)}</s>` : '');
+  }
+  if (feat[1]) {
+    document.getElementById('heroFloat1Art').innerHTML = productArt(feat[1].art);
+    document.getElementById('heroFloat1Name').textContent = feat[1].name;
+    document.getElementById('heroFloat1Price').textContent = money(feat[1].sale && feat[1].sale < feat[1].price ? feat[1].sale : feat[1].price);
+  }
+  if (feat[2]) {
+    document.getElementById('heroFloat2Art').innerHTML = productArt(feat[2].art);
+    document.getElementById('heroFloat2Name').textContent = feat[2].name;
+    document.getElementById('heroFloat2Price').textContent = money(feat[2].sale && feat[2].sale < feat[2].price ? feat[2].sale : feat[2].price);
+  }
+  /* hero parallax tilt */
+  const visual = document.getElementById('heroVisual');
+  if (visual && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !window.matchMedia('(max-width: 920px)').matches){
+    document.querySelector('.hero').addEventListener('mousemove', e => {
+      const r = visual.getBoundingClientRect();
+      const x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5;
+      visual.querySelectorAll('[data-hero-tilt]').forEach((c,i) => {
+        const d = (i+1)*4;
+        c.style.transform = `rotateY(${x*d}deg) rotateX(${-y*d}deg)`;
+      });
+    });
+  }
+  /* marquee */
+  const words = ['Retail','Wholesale','Sri Lanka','India','Nepal','Bangladesh','Pakistan'];
+  const half = words.map(w => `<span>${w}<i></i></span>`).join('');
+  document.getElementById('marqueeTrack').innerHTML = half + half;
+  /* category art + arrows */
+  document.getElementById('catArtMobile').innerHTML = productArt('earbuds');
+  document.getElementById('catArtLaptop').innerHTML = productArt('stand');
+  document.getElementById('arrM').innerHTML = ICONS.arrow; document.getElementById('arrL').innerHTML = ICONS.arrow;
+  /* featured products */
+  const grid = document.getElementById('featuredGrid');
+  grid.innerHTML = products.filter(p => p.featured).concat(products.filter(p => p.isNew && !p.featured)).slice(0,8).map((p,i)=>productCard(p, i*60)).join('');
+  bindProductCards(grid);
+  /* why icons */
+  document.getElementById('feat1').insertAdjacentHTML('afterbegin', featIcon('layers'));
+  document.getElementById('feat2').insertAdjacentHTML('afterbegin', featIcon('globe'));
+  document.getElementById('feat3').insertAdjacentHTML('afterbegin', featIcon('bolt'));
+  document.getElementById('feat4').insertAdjacentHTML('afterbegin', featIcon('shield'));
+  /* tier rows */
+  document.getElementById('tierRows').innerHTML = GTS_BRAND.wholesaleTiers.map(t =>
+    `<tr><td>${t.label}</td><td><b>${t.discount}</b></td></tr>`).join('');
+  /* gallery */
+  const ggrid = document.getElementById('galleryGrid');
+  function renderGallery(f){
+    const items = gtsStore().gallery.filter(g => g.public && (f==='all' || g.tag===f));
+    ggrid.innerHTML = items.map((g,i) => `
+      <figure class="g-item reveal visible" data-gid="${g.id}" tabindex="0" role="button" aria-label="Open ${g.title}">
+        ${galleryArt(g.art)}
+        <figcaption><b>${g.title}</b><span>${g.tag==='mobile'?'Mobile':'Laptop'}</span></figcaption>
+      </figure>`).join('');
+    ggrid.querySelectorAll('.g-item').forEach(el => {
+      const open = () => {
+        const item = gtsStore().gallery.find(x => x.id === el.dataset.gid);
+        document.getElementById('lightboxCard').innerHTML = `
+          <div class="lightbox-art">${galleryArt(item.art, true)}</div>
+          <div class="lightbox-meta"><div><b>${item.title}</b><p class="muted" style="font-size:.8rem;margin-top:2px">${item.alt||''}</p></div>
+          <span class="badge badge-wholesale">${item.tag==='mobile'?'Mobile':'Laptop'}</span></div>`;
+        document.getElementById('lightbox').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      };
+      el.addEventListener('click', open);
+      el.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
+    });
+  }
+  renderGallery('all');
+  document.querySelectorAll('[data-gfilter]').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('[data-gfilter]').forEach(x => x.classList.remove('active'));
+    b.classList.add('active'); renderGallery(b.dataset.gfilter);
+  }));
+  const lbClose = () => { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow=''; };
+  document.getElementById('lightboxClose').addEventListener('click', lbClose);
+  document.getElementById('lightbox').addEventListener('click', e => { if (e.target.id==='lightbox') lbClose(); });
+  document.addEventListener('keydown', e => { if (e.key==='Escape') lbClose(); });
+  /* testimonials */
+  document.getElementById('testiGrid').innerHTML = gtsStore().testimonials.filter(t=>t.status!=='hidden').slice(0,6).map(t => `
+    <div class="testi-card reveal">
+      <span class="quote-mark">“</span>
+      <div class="stars" aria-label="${t.rating} out of 5 stars">${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)}</div>
+      <p>${t.text}</p>
+      <div class="testi-who"><span class="testi-av">${t.name.replace('DEMO ','').charAt(0)}</span>
+        <div><b>${t.name}</b><span>${t.role}</span></div></div>
+      <span class="demo-flag">Demo content — not a real customer review</span>
+    </div>`).join('');
+  /* countries */
+  document.getElementById('countryGrid').innerHTML = GTS_BRAND.countries.map(c => `
+    <div class="country-card reveal"><span class="country-code">${c.code}</span><b>${c.name}</b><span>Retail &amp; Wholesale</span></div>`).join('');
+  gtsReveal(); gtsTilt();
+});
+</script>
+</body>
+</html>

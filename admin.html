@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — GTS Portal</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230A0A0A'/><text x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='white' text-anchor='middle'>G</text><circle cx='23' cy='9' r='3' fill='%23C41E3A'/></svg>">
+</head>
+<body>
+<!-- ======= LOGIN / FIRST-RUN SETUP ======= -->
+<div class="admin-login-wrap" id="authView">
+  <div class="hero-bg" style="position:absolute;inset:0"><div class="hero-grid"></div><div class="hero-orb"></div></div>
+  <div class="admin-login-card">
+    <a class="logo"><span><b>GTS</b><span class="logo-dot">.</span></span><small>Admin Portal</small></a>
+    <!-- first-run: owner sets password -->
+    <div id="setupBox" style="display:none">
+      <h3 style="margin:14px 0 4px">First-run setup</h3>
+      <p class="muted" style="font-size:.86rem">Create the owner password for account <b style="color:#fff">samith1985</b>. Minimum 8 characters.</p>
+      <form id="setupForm" novalidate style="margin-top:18px;display:flex;flex-direction:column;gap:14px">
+        <div class="field"><label for="sPass">New password</label><input id="sPass" type="password" required data-min="8" autocomplete="new-password"><span class="err">Minimum 8 characters.</span></div>
+        <div class="field"><label for="sPass2">Confirm password</label><input id="sPass2" type="password" required autocomplete="new-password"><span class="err">Passwords do not match.</span></div>
+        <button class="btn btn-primary" type="submit">Create owner account</button>
+      </form>
+    </div>
+    <!-- normal login -->
+    <div id="loginBox" style="display:none">
+      <h3 style="margin:14px 0 4px">Sign in</h3>
+      <p class="muted" style="font-size:.86rem">Authorised administrators only.</p>
+      <form id="loginForm" novalidate style="margin-top:18px;display:flex;flex-direction:column;gap:14px">
+        <div class="field"><label for="lUser">Username</label><input id="lUser" required autocomplete="username"><span class="err">Enter your username.</span></div>
+        <div class="field"><label for="lPass">Password</label><input id="lPass" type="password" required autocomplete="current-password"><span class="err">Enter your password.</span></div>
+        <div class="login-err" id="loginErr"></div>
+        <button class="btn btn-primary" type="submit" id="loginBtn">Sign in</button>
+      </form>
+      <p class="login-note">Protected by rate limiting — repeated failed attempts temporarily lock this device. Sessions expire automatically.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ======= ADMIN APP ======= -->
+<div class="admin-shell" id="appView" style="display:none">
+  <aside class="admin-side" id="adminSide">
+    <a class="logo" href="index.html"><span><b>GTS</b><span class="logo-dot">.</span></span><small>Admin Portal</small></a>
+    <button class="admin-nav-btn active" data-view="dashboard">Dashboard</button>
+    <button class="admin-nav-btn" data-view="products">Products</button>
+    <button class="admin-nav-btn" data-view="prices">Prices &amp; Log</button>
+    <button class="admin-nav-btn" data-view="gallery">Gallery</button>
+    <button class="admin-nav-btn" data-view="testimonials">Testimonials</button>
+    <button class="admin-nav-btn" data-view="enquiries">Enquiries</button>
+    <button class="admin-nav-btn" data-view="settings">Settings</button>
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
+      <a class="admin-nav-btn" href="index.html" style="text-align:center">View website ↗</a>
+      <button class="admin-nav-btn" id="logoutBtn" style="text-align:center;color:var(--red2)">Log out</button>
+    </div>
+  </aside>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <h1 id="viewTitle">Dashboard</h1>
+      <button class="menu-toggle" id="adminMenuToggle" style="display:none" aria-label="Menu"><span></span><span></span><span></span></button>
+    </div>
+
+    <section class="view active" data-view="dashboard">
+      <div class="stat-grid" id="statCards"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" class="dash-cols">
+        <div class="info-card"><h3 style="margin-bottom:14px">Recent product updates</h3><div id="recentUpdates" style="font-size:.86rem"></div></div>
+        <div class="info-card"><h3 style="margin-bottom:14px">Pending enquiries</h3><div id="recentEnquiries" style="font-size:.86rem"></div></div>
+      </div>
+    </section>
+
+    <section class="view" data-view="products">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px">
+        <p class="muted" style="font-size:.86rem">Add, edit, publish or archive products. Price changes are logged with your username and timestamp.</p>
+        <button class="btn btn-primary btn-sm" id="addProductBtn">+ Add product</button>
+      </div>
+      <div class="info-card" style="padding:0;overflow:auto">
+        <table class="admin-table"><thead><tr><th>Product</th><th>Category</th><th>Retail</th><th>Sale</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="productRows"></tbody></table>
+      </div>
+      <div class="confirm-bar" id="deleteBar"></div>
+    </section>
+
+    <section class="view" data-view="prices">
+      <p class="muted" style="font-size:.86rem;margin-bottom:18px">Quick price editor — updates the public catalogue, cards and cart instantly. All changes are recorded in the audit log below.</p>
+      <div class="info-card" style="padding:0;overflow:auto">
+        <table class="admin-table"><thead><tr><th>Product</th><th>Retail price (Rs)</th><th>Sale price (Rs)</th><th></th></tr></thead>
+        <tbody id="priceRows"></tbody></table>
+      </div>
+      <div class="info-card" style="margin-top:20px;padding:0;overflow:auto">
+        <h3 style="padding:18px 20px 0;font-size:1rem">Price change log</h3>
+        <table class="admin-table price-log"><thead><tr><th>When</th><th>Product</th><th>Change</th><th>By</th></tr></thead>
+        <tbody id="priceLogRows"></tbody></table>
+      </div>
+    </section>
+
+    <section class="view" data-view="gallery">
+      <p class="muted" style="font-size:.86rem;margin-bottom:18px">Upload images (JPEG / PNG / WebP, max 2&nbsp;MB each), set alt text, captions, category and visibility. Draft images never appear on the public site.</p>
+      <div class="drop-zone" id="dropZone">Click or drag images here to upload<br><span style="font-size:.78rem">JPEG · PNG · WebP · max 2 MB</span>
+        <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" multiple hidden>
+      </div>
+      <div class="upload-preview" id="uploadPreview"></div>
+      <div style="display:flex;gap:10px;margin:14px 0 22px;flex-wrap:wrap;align-items:center">
+        <select class="select" id="upTag"><option value="mobile">Mobile</option><option value="laptop">Laptop</option></select>
+        <label class="muted" style="font-size:.84rem;display:flex;gap:8px;align-items:center"><input type="checkbox" id="upPublic" checked> Publish immediately</label>
+        <button class="btn btn-primary btn-sm" id="saveUploads" disabled>Save uploaded images</button>
+      </div>
+      <div class="gal-admin-grid" id="galAdminGrid"></div>
+    </section>
+
+    <section class="view" data-view="testimonials">
+      <p class="muted" style="font-size:.86rem;margin-bottom:18px">Demo entries are locked and permanently watermarked on the public site. Only genuine, consent-confirmed feedback can be approved for display.</p>
+      <div class="info-card" style="padding:0;overflow:auto">
+        <table class="admin-table"><thead><tr><th>Feedback</th><th>Country</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="testiRows"></tbody></table>
+      </div>
+    </section>
+
+    <section class="view" data-view="enquiries">
+      <p class="muted" style="font-size:.86rem;margin-bottom:18px">Customer contact and order enquiries. Private — never displayed publicly.</p>
+      <div id="enquiryList"></div>
+    </section>
+
+    <section class="view" data-view="settings">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px" class="dash-cols">
+        <div class="info-card">
+          <h3 style="margin-bottom:14px">Change password</h3>
+          <form id="passForm" novalidate style="display:flex;flex-direction:column;gap:14px">
+            <div class="field"><label for="oldPass">Current password</label><input id="oldPass" type="password" required><span class="err">Required.</span></div>
+            <div class="field"><label for="newPass">New password (min 8)</label><input id="newPass" type="password" required data-min="8" autocomplete="new-password"><span class="err">Minimum 8 characters.</span></div>
+            <div class="field"><label for="newPass2">Confirm new password</label><input id="newPass2" type="password" required><span class="err">Passwords do not match.</span></div>
+            <button class="btn btn-primary btn-sm" type="submit">Update password</button>
+          </form>
+        </div>
+        <div class="info-card">
+          <h3 style="margin-bottom:14px">Data &amp; recovery</h3>
+          <p class="muted" style="font-size:.86rem;margin-bottom:16px">Download a full backup of catalogue, gallery, testimonials and enquiries as JSON, or reset the demo dataset.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" id="exportBtn">Export backup (JSON)</button>
+            <button class="btn btn-dark btn-sm" id="resetBtn">Reset demo data</button>
+          </div>
+          <div class="confirm-bar" id="resetBar"></div>
+          <p class="muted" style="font-size:.78rem;margin-top:16px">Business email: <b style="color:#fff">samith.gts@gmail.com</b></p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- product modal -->
+<div class="modal-backdrop" id="productModal" role="dialog" aria-modal="true">
+  <div class="modal" style="width:min(680px,96vw)">
+    <div class="modal-head"><h3 id="pmTitle">Add product</h3><button class="modal-close" id="pmClose" aria-label="Close">✕</button></div>
+    <div class="modal-body">
+      <form id="productForm" novalidate>
+        <div class="form-grid">
+          <div class="field"><label for="pfName">Name *</label><input id="pfName" required><span class="err">Required.</span></div>
+          <div class="field"><label for="pfType">Type</label><input id="pfType" placeholder="e.g. Wall Charger"></div>
+          <div class="field"><label for="pfCat">Category *</label><select id="pfCat"><option value="mobile">Mobile</option><option value="laptop">Laptop</option></select></div>
+          <div class="field"><label for="pfArt">Artwork style</label><select id="pfArt">
+            <option>charger</option><option>earbuds</option><option>cable</option><option>case</option><option>powerbank</option>
+            <option>mount</option><option>stand</option><option>hub</option><option>mouse</option><option>keyboard</option>
+            <option>sleeve</option><option>coolpad</option></select></div>
+          <div class="field"><label for="pfPrice">Retail price (Rs) *</label><input id="pfPrice" type="number" min="0" step="1" required><span class="err">Price must be 0 or more.</span></div>
+          <div class="field"><label for="pfSale">Sale price (Rs, optional)</label><input id="pfSale" type="number" min="0" step="1"><span class="err">Must be 0 or more.</span></div>
+          <div class="field"><label for="pfStock">Stock status</label><select id="pfStock"><option value="in">In stock</option><option value="low">Low stock</option><option value="out">Out of stock</option></select></div>
+          <div class="field"><label for="pfQty">Stock quantity</label><input id="pfQty" type="number" min="0" step="1" value="50"></div>
+          <div class="field"><label for="pfStatus">Status</label><select id="pfStatus"><option value="published">Published</option><option value="draft">Draft</option></select></div>
+          <div class="field" style="justify-content:flex-end"><label style="display:flex;gap:10px;align-items:center;flex-direction:row"><input type="checkbox" id="pfFeatured"> Featured</label>
+          <label style="display:flex;gap:10px;align-items:center;flex-direction:row"><input type="checkbox" id="pfNew"> New arrival</label></div>
+          <div class="field full"><label for="pfDesc">Description *</label><textarea id="pfDesc" rows="3" required data-min="10"></textarea><span class="err">Min 10 characters.</span></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end">
+          <button type="button" class="btn btn-ghost btn-sm" id="pmCancel">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Save product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script src="js/data.js"></script><script src="js/main.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

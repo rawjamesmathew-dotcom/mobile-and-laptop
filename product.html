@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product — GTS</title>
+<meta name="description" content="GTS premium accessory — full specifications, wholesale tiers and order enquiry.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230A0A0A'/><text x='16' y='22' font-family='sans-serif' font-size='15' font-weight='700' fill='white' text-anchor='middle'>G</text><circle cx='23' cy='9' r='3' fill='%23C41E3A'/></svg>">
+</head>
+<body data-page="">
+<div id="app-header"></div>
+<main class="page container" style="padding:150px 0 40px" id="pdRoot"></main>
+<div id="app-footer"></div>
+<script src="js/data.js"></script><script src="js/main.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const slug = new URLSearchParams(location.search).get('slug');
+  const p = gtsBySlug(slug);
+  const root = document.getElementById('pdRoot');
+  if (!p || p.status !== 'published'){
+    document.title = 'Product not found — GTS';
+    root.innerHTML = `<div class="empty-state"><h3>Product not found</h3><p>This item may be unpublished or the link is incorrect.</p>
+      <a class="btn btn-primary btn-sm" href="collections.html" style="margin-top:18px">Back to collections</a></div>`;
+    return;
+  }
+  const eff = p.sale && p.sale < p.price ? p.sale : p.price;
+  const pct = salePct(p);
+  document.title = `${p.name} — GTS`;
+  const specs = Object.entries(p.specs || {}).map(([k,v]) => `<div class="spec"><span>${k}</span><b>${v}</b></div>`).join('');
+  const tiers = GTS_BRAND.wholesaleTiers.map(t => {
+    const w = gtsWholesalePrice(p, t.min);
+    return `<tr><td>${t.label}</td><td><b>${money(w.unit)}</b> / unit</td><td>${t.discount}</td></tr>`;
+  }).join('');
+  root.innerHTML = `
+  <nav class="muted" style="font-size:.8rem;margin-bottom:30px" aria-label="Breadcrumb">
+    <a href="index.html">Home</a> / <a href="collections.html">Collections</a> /
+    <a href="collections.html?cat=${p.category}">${p.category==='mobile'?'Mobile':'Laptop'}</a> / <span style="color:#fff">${p.name}</span>
+  </nav>
+  <div class="pd-grid">
+    <div class="pd-media" data-tilt><div class="art-wrap">${productArt(p.art)}</div>
+      <p class="muted" style="font-size:.74rem;text-align:center;margin-top:14px">Original illustrated artwork — licensed product photography in progress</p>
+    </div>
+    <div class="pd-info">
+      <span class="pc-cat">${p.category==='mobile'?'Mobile Accessories':'Laptop Accessories'} · ${p.type}</span>
+      <h1>${p.name}</h1>
+      <div>${p.isNew?'<span class="badge badge-new" style="margin-right:6px">New Arrival</span>':''}${pct?`<span class="badge badge-sale">−${pct}% Limited Offer</span>`:''}</div>
+      <div class="pd-price"><b id="pdPrice">${money(eff)}</b>${pct?`<s>${money(p.price)}</s><span class="save">SAVE ${pct}%</span>`:''}</div>
+      <p class="muted" style="font-size:.85rem">Unit price · wholesale tiers below apply automatically at quantity</p>
+      ${stockLabel(p)}
+      <p class="pd-desc">${p.desc}</p>
+      <div class="wholesale-box">
+        <h4>Wholesale pricing</h4>
+        <table class="tier-table" style="font-size:.86rem">
+          <thead><tr><th>Tier</th><th>Unit price</th><th>Saving</th></tr></thead><tbody>${tiers}</tbody>
+        </table>
+      </div>
+      <div class="pd-specs">${specs}</div>
+      <div class="qty-row">
+        <div class="qty">
+          <button id="qMinus" aria-label="Decrease quantity">−</button>
+          <input id="qInput" value="1" inputmode="numeric" aria-label="Quantity">
+          <button id="qPlus" aria-label="Increase quantity">+</button>
+        </div>
+        <button class="btn btn-primary" id="pdAdd" ${p.stock==='out'?'disabled':''}>${p.stock==='out'?'Out of stock':'Add to Cart'}</button>
+      </div>
+      <p class="pc-wholesale" id="tierNote" style="font-size:.82rem"></p>
+      <p class="muted" style="font-size:.8rem;margin-top:10px">No online payment yet — checkout sends a verified order enquiry to our team. We confirm stock, final pricing and delivery before anything is charged.</p>
+    </div>
+  </div>
+  <section class="related">
+    <div class="section-head"><div><p class="eyebrow">Complete the setup</p><h2 class="section-title" style="font-size:1.8rem">Related products</h2></div></div>
+    <div class="product-grid" id="relatedGrid"></div>
+  </section>`;
+  const qtyEl = document.getElementById('qInput');
+  function syncTierNote(){
+    const q = Math.max(1, parseInt(qtyEl.value)||1);
+    const w = gtsWholesalePrice(p, q);
+    document.getElementById('tierNote').innerHTML = w.discount
+      ? `✦ Wholesale tier applied at <b>${q} units</b> — unit price <b>${money(w.unit)}</b> (${Math.round(w.discount*100)}% off)`
+      : `Add <b>${10 - q} more</b> to unlock wholesale pricing (10+ units)`;
+    document.getElementById('pdPrice').textContent = money(q===1 ? eff : w.unit);
+  }
+  document.getElementById('qMinus').addEventListener('click', ()=>{ qtyEl.value = Math.max(1,(parseInt(qtyEl.value)||1)-1); syncTierNote(); });
+  document.getElementById('qPlus').addEventListener('click', ()=>{ qtyEl.value = (parseInt(qtyEl.value)||1)+1; syncTierNote(); });
+  qtyEl.addEventListener('input', syncTierNote); syncTierNote();
+  document.getElementById('pdAdd').addEventListener('click', ()=> gtsAddToCart(p.slug, Math.max(1, parseInt(qtyEl.value)||1)));
+  const rel = gtsProducts().filter(x => x.category===p.category && x.id!==p.id).slice(0,4);
+  const relFill = rel.length ? rel : gtsProducts().filter(x=>x.id!==p.id).slice(0,4);
+  const rg = document.getElementById('relatedGrid');
+  rg.innerHTML = relFill.map((x,i)=>productCard(x,i*60)).join('');
+  bindProductCards(rg); gtsReveal(); gtsTilt();
+});
+</script>
+</body>
+</html>
